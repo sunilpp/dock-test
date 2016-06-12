@@ -1,49 +1,18 @@
-# builder 2016-06-12 09:46:49 -0700
-FROM phusion/baseimage:0.9.18
-MAINTAINER Unknown
+FROM ubuntu
+MAINTAINER Eric Mill "eric@konklone.com"
 
-ENV DISPLAY :100
-ENV RBENV_ROOT /usr/local/rbenv
+# turn on universe packages
+RUN echo "deb http://archive.ubuntu.com/ubuntu raring main universe" > /etc/apt/sources.list
+RUN apt-get update
 
-EXPOSE 9999
+# basics
+RUN apt-get install -y nginx openssh-server git-core openssh-client curl
+RUN apt-get install -y nano
+RUN apt-get install -y build-essential
+RUN apt-get install -y openssl libreadline6 libreadline6-dev curl zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config
 
-COPY Dockerfile /Dockerfile
-
-
-RUN `# Creating user / Adjusting user permissions`                    &&       \
-     (groupadd -g 501 builder || true)                                &&       \
-     ((useradd -u 501 -g 501 -p builder -m builder) ||                         \
-      (usermod -u 501 builder && groupmod -g 501 builder))            &&       \
-     mkdir -p /home/builder                                           &&       \
-     chown -R builder:builder /home/builder /opt                      &&       \
-                                                                               \
-    `# Updating Package List`                                         &&       \
-     DEBIAN_FRONTEND=noninteractive apt-get update                    &&       \
-                                                                               \
-    `# Installing packages`                                           &&       \
-     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-     python-software-properties                                                \
-     software-properties-common                                                \
-    `# Updating Package List`                                         &&       \
-     DEBIAN_FRONTEND=noninteractive apt-get update                    &&       \
-                                                                               \
-    `# Installing packages`                                           &&       \
-     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-     curl git-core python-software-properties build-essential libssl-dev       \
-                                                                               \
-    `# Cleaning up after installation`                                &&       \
-     DEBIAN_FRONTEND=noninteractive apt-get clean                     &&       \
-     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*                    &&       \
-                                                                               \
-    `# Creating /path/to/somefile.txt`                                &&       \
-     mkdir -p /path/to                                                &&       \
-     echo "This is the contents of the file" >> /path/to/somefile.txt &&       \
-     echo "Hopefully this works for parsing" >> /path/to/somefile.txt &&       \
-     chown builder:builder /path/to/somefile.txt                      &&       \
-                                                                               \
-    `# Defining startup script`                                       &&       \
-     echo '#!/bin/sh -e' > /etc/rc.local                              &&       \
-     echo "echo"Hello World!\"" >> /etc/rc.local                    &&      
-
-ENTRYPOINT ["/sbin/my_init"]
-CMD [""]
+# install RVM, Ruby, and Bundler
+RUN \curl -L https://get.rvm.io | bash -s stable
+RUN /bin/bash -l -c "rvm requirements"
+RUN /bin/bash -l -c "rvm install 2.0"
+RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
