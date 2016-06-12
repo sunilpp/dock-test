@@ -24,10 +24,6 @@ RUN `# Creating user / Adjusting user permissions`                    &&       \
      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
      python-software-properties                                                \
      software-properties-common                                                \
-                                                                               \
-    `# Adding bitcoin PPA`                                            &&       \
-     add-apt-repository -y ppa:bitcoin                                &&       \
-                                                                               \
     `# Updating Package List`                                         &&       \
      DEBIAN_FRONTEND=noninteractive apt-get update                    &&       \
                                                                                \
