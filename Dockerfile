@@ -8,7 +8,7 @@ ENV RBENV_ROOT /usr/local/rbenv
 EXPOSE 9999
 
 COPY Dockerfile /Dockerfile
-COPY Dockerfile.yml /Dockerfile.yml
+
 
 RUN `# Creating user / Adjusting user permissions`                    &&       \
      (groupadd -g 501 builder || true)                                &&       \
