@@ -1,5 +1,4 @@
-FROM ubuntu:trusty
-MAINTAINER vad.viktor@gmail.com
+FROM ubuntu:15.04
 
 #================================================
 # Customize sources for apt-get
